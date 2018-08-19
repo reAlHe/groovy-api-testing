@@ -34,7 +34,7 @@ class BaseSpec extends Specification {
             }
             response.failure { resp, data ->
                 [
-                        stacktrace: data,
+                        stacktrace: data instanceof byte[] ? new String(data) : data,
                         status    : resp.statusCode
                 ]
             }

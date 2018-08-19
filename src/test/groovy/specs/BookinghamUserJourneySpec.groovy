@@ -1,6 +1,6 @@
 package specs
 
-
+import model.User
 import org.apache.commons.lang3.RandomStringUtils
 import specs.BaseSpecs.TestableTrait
 import specs.BaseSpecs.UserAuthorizationSpec
@@ -16,6 +16,12 @@ class BookinghamUserJourneySpec extends UserAuthorizationSpec implements Testabl
     String username
 
     @Shared
+    User user
+
+    @Shared
+    String password
+
+    @Shared
     String hotelName
 
     @Shared
@@ -24,41 +30,50 @@ class BookinghamUserJourneySpec extends UserAuthorizationSpec implements Testabl
     def setupSpec() {
         username = RandomStringUtils.randomAlphabetic(10)
         hotelName = RandomStringUtils.randomAlphabetic(10)
+        password = RandomStringUtils.randomAlphanumeric(10)
+        println 'generated username: ' + username
         println 'generated hotelName: ' + hotelName
+        println 'generated password: ' + password
     }
 
     def 'create new user'() {
         given: 'a user to create'
 
-        def user = [
+        def userToCreate = [
                 username : username,
                 firstName: 'Jürgen',
                 lastName : 'Klinsmann',
-                password : '12345abc'
+                password : password
         ]
 
         when: 'I post the user'
         def response = client.post {
             request.uri.path = '/users'
-            request.body = user
+            request.body = userToCreate
         }
 
-        // User usr = response.data
+        user = response.data
 
         then: 'the user was created'
         assertResponseStatus(response, 201)
+
+        and: 'the response could be mapped to a user'
+        user.sayHello()
     }
 
 
     def 'create new hotel'() {
-        given: 'a hotel to be created'
+        given: 'the recently created user is logged in'
+        loginAs([username: user.username, password: password])
+
+        and: 'a hotel to be created'
 
         def hotel = [
                 name    : hotelName,
                 street  : 'Theresienhöhe 13',
                 zipcode : '80339',
                 city    : 'München',
-                contact : 'alexander.henze',
+                contact : user.username,
                 features: ['MINI_BAR']
         ]
 
@@ -96,7 +111,7 @@ class BookinghamUserJourneySpec extends UserAuthorizationSpec implements Testabl
         then: 'the booking was successfully created for the user'
         assertResponseStatus(response, 201)
 
-        assert response.data?.booker == 'alexander.henze'
+        assert response.data?.booker == user.username
         assert response.data.hotel.name == hotelName
         assert response.data.startDate == start
         assert response.data.endDate == end
