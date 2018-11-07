@@ -15,3 +15,7 @@ f
 6src/test/groovy/specs/BookinghamUserJourneySpec.groovy,8/3/83e2962e21e874d9382da5d0c5b911a75a8c6493
 Q
 !src/test/groovy/model/User.groovy,c/a/ca97402da90c97723a4ae81d3b4a0b11ab6c4342
+Y
+).idea/modules/groovy-api-testing_main.iml,e/1/e1c951238892cd29b4e2789cde4426ddf5b09834
+Y
+).idea/modules/groovy-api-testing_test.iml,6/a/6a4abdb8fa9311d1ad1f2ec77418a34c0b25cf12
