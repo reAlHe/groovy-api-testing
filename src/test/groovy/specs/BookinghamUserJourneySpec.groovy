@@ -2,15 +2,15 @@ package specs
 
 import model.User
 import org.apache.commons.lang3.RandomStringUtils
+import specs.BaseSpecs.BaseSpec
 import specs.BaseSpecs.TestableTrait
-import specs.BaseSpecs.UserAuthorizationSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
 
 import java.time.LocalDate
 
 @Stepwise
-class BookinghamUserJourneySpec extends UserAuthorizationSpec implements TestableTrait {
+class BookinghamUserJourneySpec extends BaseSpec implements TestableTrait {
 
     @Shared
     String username
@@ -64,7 +64,7 @@ class BookinghamUserJourneySpec extends UserAuthorizationSpec implements Testabl
 
     def 'create new hotel'() {
         given: 'the recently created user is logged in'
-        loginAs([username: user.username, password: password])
+        loginWithUsernameAndPassword(username, password)
 
         and: 'a hotel to be created'
 
@@ -89,32 +89,4 @@ class BookinghamUserJourneySpec extends UserAuthorizationSpec implements Testabl
         assertResponseStatus(response, 201)
         assertReceivedDataAreAsExpected(response, hotel)
     }
-
-
-    def 'make a booking for hotel'() {
-        given: 'booking data is known'
-        String start = LocalDate.now().toString()
-        String end = LocalDate.now().plusDays(14).toString()
-
-        def booking = [
-                hotelId  : hotelid,
-                startDate: start,
-                endDate  : end,
-        ]
-
-        when: 'I post the booking'
-        def response = client.post {
-            request.uri.path = '/bookings'
-            request.body = booking
-        }
-
-        then: 'the booking was successfully created for the user'
-        assertResponseStatus(response, 201)
-
-        assert response.data?.booker == user.username
-        assert response.data.hotel.name == hotelName
-        assert response.data.startDate == start
-        assert response.data.endDate == end
-    }
-
 }

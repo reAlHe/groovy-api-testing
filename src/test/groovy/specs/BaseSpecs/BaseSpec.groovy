@@ -41,7 +41,12 @@ class BaseSpec extends Specification {
         }
     }
 
-    def loginAs(def user) {
+    def loginWithUsernameAndPassword(String username, String password) {
+        def user = [
+                'username' : username,
+                'password' : password
+        ]
+
         def response = client.post {
             request.setAccept('application/json')
             request.uri.path = '/authentication/auth'

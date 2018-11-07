@@ -12,7 +12,7 @@ public class JavaTest {
     public void createUser() throws JSONException {
         String jsonString = new JSONObject()
                 .put("username", "jogi.loew")
-                .put("firstName", "Jürgen")
+                .put("firstName", "Joachim")
                 .put("lastName", "Löw")
                 .put("password", "Weltmeister!")
                 .toString();
@@ -34,7 +34,7 @@ public class JavaTest {
                 .put("features", Collections.singletonList("MINI_BAR"))
                 .toString();
 
-        given().cookie("token", "bOUQQ2dkq4N870yr").contentType("application/json").baseUri(
+        given().cookie("token", "c8xpCThtA8PI0pqF").contentType("application/json").baseUri(
                 "http://localhost:8080").header("token", "").body(jsonString).when().post("/hotels").then().statusCode(
                 201);
 
